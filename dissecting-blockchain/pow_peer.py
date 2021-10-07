@@ -59,6 +59,10 @@ class PeerShell(cmd.Cmd):
     def __init__(self, server, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.server = server
+    
+    def set_state(self, state):
+        global blockchain_state
+        blockchain_state = state
 
     # ----- basic peer commands -----
     def do_ping(self, arg):
@@ -81,6 +85,7 @@ class PeerShell(cmd.Cmd):
 
     def do_state(self, arg):
         print(blockchain_state)
+        return blockchain_state
 
     def do_broadcast(self, arg):
         for peer in known_peers:
@@ -116,14 +121,16 @@ class PeerShell(cmd.Cmd):
 
     def do_validate(self, args):
         print(Blockchain.validate(blockchain_state.blocks))
-    
-    
 
 
-def run(port):
+def start_peer(port):
     server = ServerThread(port)
     server.start()  # The server is now running
-    PeerShell(server).cmdloop()
+    return server
+
+def run(port):
+    server = start_peer(port)
+    return PeerShell(server).cmdloop()
 
 
 if __name__ == "__main__":

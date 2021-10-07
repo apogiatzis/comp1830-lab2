@@ -27,6 +27,9 @@ class Block:
             ).encode("utf-8")
         ).hexdigest()
 
+    def to_dict(self):
+        return self.__dict__
+
     def __str__(self):
         return "Block<{0}, {1}, Previous<{2}>, {3}, {4}>".format(
             self.index, self.header_hash(), self.previous_block, int(self.timestamp.timestamp()), self.data
@@ -50,8 +53,15 @@ class Blockchain:
     def get_last_block(self):
         return self.blocks[-1]
 
+    def to_dict(self):
+        return {
+            "genesis": self.genesis.to_dict(),
+            "blocks": [block.to_dict() for block in self.blocks]
+        }
+
     def __str__(self):
         return "\n".join(str(block) for block in self.blocks)
+
 
     @classmethod
     def validate(cls, blocks: List[Block]) -> bool:

@@ -32,7 +32,8 @@ class PoWBlock(Block):
         """
         Validates the Proof
         """
-        return self.ghash(nonce)[:4] == "0000"
+        prefix = "00000"
+        return self.ghash(nonce)[:len(prefix)] == prefix
 
 class PoWBlockchain:
     def __init__(self, genesis=None, blocks=None):
