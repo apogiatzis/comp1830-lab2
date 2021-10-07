@@ -109,8 +109,15 @@ class PeerShell(cmd.Cmd):
         index, previous = int(index), str(previous)
         blockchain_state.blocks[index].previous_block = previous
 
+    def do_setnonce(self, arg):
+        index, nonce = arg.split("#")
+        index, nonce = int(index), str(nonce)
+        blockchain_state.blocks[index].nonce = nonce
+
     def do_validate(self, args):
         print(Blockchain.validate(blockchain_state.blocks))
+    
+    
 
 
 def run(port):
