@@ -85,7 +85,7 @@ class PeerShell(cmd.Cmd):
 
     def do_state(self, arg):
         print(blockchain_state)
-        return blockchain_state
+        # return blockchain_state
 
     def do_broadcast(self, arg):
         for peer in known_peers:
