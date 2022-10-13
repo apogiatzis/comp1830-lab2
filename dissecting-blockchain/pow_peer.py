@@ -1,4 +1,4 @@
-import argparse, threading, cmd
+import argparse, threading, cmd, hashlib
 
 from datetime import datetime
 from pow_block import PoWBlockchain as Blockchain
@@ -78,6 +78,27 @@ class PeerShell(cmd.Cmd):
             return
         hello(arg)
         print("Peer added successfully")
+
+    def do_pow(self, arg):
+        """
+        Proof of work. Add nonce to block.
+        """      
+        prefix = "00000"  
+        nonce = 0
+        index, timestamp,data,previous_block = arg.split("#")
+        header_hash = hashlib.sha256(
+            (
+                str(index)
+                + str(int(timestamp))
+                + str(data)
+                + str(previous_block)
+            ).encode("utf-8")
+        ).hexdigest()
+        ghash = hashlib.sha256(''.join((header_hash, str(nonce))).encode('utf-8')).hexdigest()
+        while ghash[:len(prefix)] != prefix:
+            nonce += 1
+            ghash = hashlib.sha256(''.join((header_hash, str(nonce))).encode('utf-8')).hexdigest()
+        print(ghash, nonce)
 
     def do_peers(self, arg):
         for peer in known_peers:

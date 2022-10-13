@@ -2,6 +2,7 @@ import hashlib
 
 from dataclasses import dataclass
 from datetime import datetime
+from re import T
 from typing import List
 
 
@@ -40,7 +41,7 @@ class Blockchain:
         self.genesis = genesis or Block(0, "Genesis Block", None)
         self.blocks = ([Block(**block) for block in blocks] if blocks else None) or [self.genesis]
 
-    def append_block(self, data: Block):
+    def append_block(self, data: str):
         """
         Add new block to blockchain
         """
@@ -77,3 +78,4 @@ if __name__ == "__main__":
     blockchain = Blockchain()
 
     # Add your code here
+    

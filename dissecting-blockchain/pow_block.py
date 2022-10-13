@@ -34,6 +34,11 @@ class PoWBlock(Block):
         """
         prefix = "00000"
         return self.ghash(nonce)[:len(prefix)] == prefix
+    
+    def __str__(self):
+        return "Block<{0}, {1}, Previous<{2}>, {3}, {4}, {5}>".format(
+            self.index, self.ghash(self.nonce), self.previous_block, int(self.timestamp.timestamp()), self.data, self.nonce
+        )
 
 class PoWBlockchain:
     def __init__(self, genesis=None, blocks=None):
@@ -44,7 +49,7 @@ class PoWBlockchain:
         """
         Add new block to blockchain
         """
-        block = PoWBlock(self.blocks[-1].index + 1, data, self.blocks[-1].header_hash())
+        block = PoWBlock(self.blocks[-1].index + 1, data, self.blocks[-1].ghash(self.blocks[-1].nonce))
         block.pow()
         new_blockchain = self.blocks + [block]
         PoWBlockchain.validate(new_blockchain)
@@ -62,6 +67,6 @@ class PoWBlockchain:
         Validate given blockchain
         """
         for i in range(1, len(blocks)):
-            if blocks[i - 1].header_hash() != blocks[i].previous_block or not blocks[i].valid(blocks[i].nonce):
+            if blocks[i - 1].ghash(blocks[i - 1].nonce) != blocks[i].previous_block or not blocks[i].valid(blocks[i].nonce):
                 return False
         return True
